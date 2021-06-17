@@ -14,5 +14,6 @@ Focale is a [chrome extension](https://chrome.google.com/webstore/detail/focale-
 ## Used
 1. JavaScript
 2. Chrome API (storage, notifications)
-3. HTML
-4. CSS
+3. Type Fit API (motivational quote)
+4. HTML
+5. CSS
