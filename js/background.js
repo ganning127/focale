@@ -34,7 +34,11 @@ chrome.runtime.onInstalled.addListener(() => {
 
   chrome.storage.local.set({
     notiSoundUrl: "./audio/default.wav"
-});
+  });
+
+  chrome.storage.local.set({
+    mostUsedTimers: []
+  });
 })
 
 chrome.runtime.onStartup.addListener(function () {
