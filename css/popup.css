@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400&display=swap');
+
+body {
+     width: 300px;
+     background-color: #fce043;
+     background-image: linear-gradient(315deg, #fce043 0%, #fb7ba2 74%);
+     background-repeat: no-repeat;
+     background-attachment: fixed;
+     font-family: 'Lato', sans-serif;
+     margin: 0;
+     border: 10px solid white;
+}
+
+.options-icon {
+  top: 0.9rem;
+  right: 0.9rem;
+  position: absolute;
+}
+.options-icon h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.8rem;
+  opacity: 0.7;
+}
+.text-reset, .text-reset:hover {
+  text-decoration: none;
+}
+.headers {
+  margin-top: 0.2rem;
+}
+ .headers h1 {
+     font-size: 2rem;
+     font-weight: 300;
+     color: #fce043;
+}
+ .text-center {
+     text-align: center;
+}
+ #timer {
+     font-weight: 100;
+     font-size: 1.5rem;
+     color: #ffffff;
+}
+ #error-text {
+     color: #c24068;
+     margin-top: 0.2rem;
+     font-style: italic;
+}
+ .hidden {
+     display: none;
+}
+ .separator {
+     height: 3rem;
+}
+ .d-inline-block {
+     display: inline-block;
+}
+ button {
+     cursor: pointer;
+}
+ .hover-effect {
+     border-radius: 20px;
+     text-decoration: none;
+     padding: 0.5rem 1rem 0.5rem 1rem;
+     letter-spacing: 2px;
+     font-weight: 150;
+     transition: all .25s;
+}
+ #start {
+     color: white;
+     font-size: 0.8rem;
+     border: 1px solid #fb7ba2;
+     padding: 0.3rem 1rem 0.3rem 1rem;
+     margin: 0.4rem 0 1rem 0;
+     background-color: rgba(251, 123, 162, 0.5);
+}
+ #start:hover {
+     background-color: #fb7ba2;
+     color: white;
+     letter-spacing: 5px;
+}
+
+.pre {
+  color: white;
+  font-size: 0.8rem;
+  border: 1px solid #fb7ba2;
+  padding: 0.3rem 1rem 0.3rem 1rem;
+  margin-bottom: 1rem;
+  background-color: rgba(251, 123, 162, 0.5);
+}
+
+.pre:hover {
+    background-color: #fb7ba2;
+    color: white;
+    letter-spacing: 5px;
+}
+
+ .generic-button {
+     color: #c24068;
+     font-size: 1rem;
+     border: 1px solid #c24068;
+     background-color: transparent;
+     margin: 0.4rem 0 1rem 0;
+}
+ .generic-button:hover {
+     background-color: #c24068;
+     color: white;
+     letter-spacing: 5px;
+}
+ .form-input {
+     border-radius: 20px;
+     width: 125px;
+     font-size: 0.8rem;
+     border: 2px solid rgba(194, 64, 104, 0.5);
+     color: white;
+     outline: none;
+     padding: 0.5rem;
+     /* display: block; */
+     background-color: rgba(194, 64, 104, 0.2);
+}
+ .form-input:focus {
+     background-color: rgba(194, 64, 104, 0.4);
+     border: 2px solid #c24068;
+}
+ ::-webkit-input-placeholder {
+     color: white !important;
+}
+ :-ms-input-placeholder {
+     color: white !important;
+}
+ ::placeholder {
+     color: white !important;
+}
+ .mx-auto {
+     margin: 0 auto;
+}
+ .hidden {
+     display: none;
+}
+ hr {
+     background-color: #c24068;
+     height: 1px;
+     border: 2px;
+     margin: 0;
+     padding: 0;
+}
+ footer {
+     background-color: rgba(251, 123, 162, 0.5);
+     font-weight: 300;
+}
+ footer p {
+     margin: 0;
+     padding: 0.6rem;
+     font-size: 0.9rem;
+     color: rgba(255, 255, 255, 0.6)
+}
+ footer a {
+     color: rgba(255, 255, 255, 0.6);
+}
+ #total-min {
+  background-color: rgba(251, 123, 162, 0.5);
+}
+ .stand-out {
+  font-weight: 400;
+}

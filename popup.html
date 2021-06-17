@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <link rel="stylesheet" href="./css/popup.css">
+      <title>Focale</title>
+   </head>
+   <body>
+     <div class="options-icon">
+       <h1><a href="options.html" target="_blank" class="text-reset">⚙️</a></h1>
+     </div>
+      <div class="headers text-center">
+         <h1>&#128214; Focale &#128214;</h1>
+      </div>
+      <h2 class="text-center" id="timer">XX:XX</h2>
+      <div class="inputs text-center">
+        <div>
+           <input type="number" id="minutes-input" class="form-input mx-auto" placeholder="Study minutes..." min=1 max=999>
+           <button id="start" class="hover-effect">Start
+           &#9889;</button>
+        </div>
+            <button class="hover-effect pre" id="pre90">90</button>
+            <button class="hover-effect pre" id="pre60">60</button>
+           <button class="hover-effect pre" id="pre30">30</button>
+           <button class="hover-effect pre" id="pre25">25</button>
+
+         <p id="error-text" class="hidden">Please enter an integer from 1-999</p>
+
+      </div>
+      <div class="controls text-center">
+         <button id="reset" class="hover-effect generic-button hidden">reset</button>
+         <button id="pause" class="hover-effect generic-button hidden">pause</button>
+      </div>
+      <footer>
+         <hr>
+
+         <p class="text-center" id="total-min">Total minutes studied: 134</p>
+         <hr>
+         <p class="text-center" id="feature-request">Submit a feature request <a href="https://docs.google.com/forms/d/e/1FAIpQLSeuJP9NP3vyJ7e8Vrp9NDn18v3o1zkrPmoy4RiZt_e0LDCT-A/viewform?usp=sf_link" target="_blank">here</a>!</p>
+
+      </footer>
+      <script src="./js/popup.js"></script>
+   </body>
+</html>

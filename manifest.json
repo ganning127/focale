@@ -1,0 +1,34 @@
+{
+  "name": "Focale - Study Pal",
+  "version": "1.1",
+  "manifest_version": 2,
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Focale"
+  },
+  "description": "Set a study timer and stay focused with Focale, the study pal.",
+  "icons": {
+    "128": "./img/favicon128.png",
+    "48": "./img/favicon48.png",
+    "16": "./img/favicon16.png"
+  },
+  "commands": {
+  "_execute_browser_action": {
+    "suggested_key": {
+      "default": "Ctrl+Shift+0",
+      "mac": "Command+Shift+0"
+    },
+    "description": "Toggle Focale extension"
+  }
+},
+"background": {
+  "scripts": ["./js/background.js"],
+  "persistent": true
+},
+"content_scripts": [{
+    "js": ["./js/content.js"],
+    "matches": ["http://*/*", "https://*/*"]
+  }],
+  "permissions": ["storage", "notifications", "https://type.fit/api/quotes"],
+  "options_page": "options.html"
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="css/options.css" />
+    <title>Focale Settings</title>
+  </head>
+  <body>
+    <div class="headings">
+      <h1>⚙️ Focale Options ⚙️</h1>
+      <h4>Configure Focale to your liking. Settings are auto saved!</h4>
+    </div>
+    <div class="container">
+      <div class="setting-container">
+        <div class="input-container">
+          <label class="description-label"
+            ><span class="help-button" id="noti-prog-help">ℹ️</span> Progress
+            notifications</label>
+          <label class="switch">
+            <input type="checkbox" id="progNoti" name="progNoti" checked />
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <p class="help-text hidden" id="noti-prog-text">
+          Notifications for 50%, 75%, and 95% complete of the timer when study
+          minutes is set for more than 30 minutes.
+        </p>
+      </div>
+
+      <div class="separator"></div>
+
+      <div class="setting-container">
+        <div class="input-container">
+          <label class="description-label"
+            ><span class="help-button" id="noti-sound-help">ℹ️</span>
+            Notification Sounds</label>
+          <label class="switch">
+            <input type="checkbox" id="soundNoti" name="soundNoti" checked />
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <p class="help-text hidden" id="noti-sound-text">
+          Alert sound for the complete notification.
+        </p>
+      </div>
+
+      <div class="separator"></div>
+
+      <div class="setting-container">
+        <div class="input-container">
+          <label class="description-label"
+            ><span class="help-button" id="site-blocking-help">ℹ️</span> Site
+            blocking</label
+          >
+          <label class="switch">
+            <input
+              type="checkbox"
+              id="siteBlocking"
+              name="siteBlocking"
+              checked
+            />
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <p class="help-text hidden" id="site-blocking-text">
+          Prevents you from going on Instagram, Facebook, Discord while the
+          timer is running (yes, paused mode included. No slacking during
+          studying -_-)
+        </p>
+      </div>
+
+      <div class="separator"></div>
+
+      <div class="setting-container">
+        <div class="input-container">
+          <label class="description-label"
+            ><span class="help-button" id="noti-sound-type-help">ℹ️</span>
+            Notification Sound Type:</label
+          >
+          <select name="notiSoundType" id="notiSoundType"></select>
+        </div>
+        <p class="help-text hidden" id="noti-sound-type-text">
+          The notification tone when the timer finishes
+        </p>
+      </div>
+    </div>
+
+    <script src="./js/options.js"></script>
+  </body>
+</html>
