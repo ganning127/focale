@@ -1,11 +1,11 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400&display=swap");
 
 body {
   background-color: #fce043;
   background-image: linear-gradient(315deg, #fce043 0%, #fb7ba2 74%);
   background-repeat: no-repeat;
   background-attachment: fixed;
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
 }
 
 .headings {
@@ -53,8 +53,8 @@ body {
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -65,16 +65,16 @@ body {
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
-  background-color: #81EB73;
+  background-color: #81eb73;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #81EB73;
+  box-shadow: 0 0 1px #81eb73;
 }
 
 input:checked + .slider:before {
@@ -95,12 +95,13 @@ input:checked + .slider:before {
 .input-container {
   display: flex;
   align-items: center;
-  justify-content: center
+  justify-content: center;
 }
 
 .description-label {
   margin-right: 1rem;
   font-size: 26px;
+  color: rgb(230, 230, 230);
 }
 
 .help-button {
@@ -114,10 +115,15 @@ input:checked + .slider:before {
 }
 
 select {
-  font-size: 18px;
+  font-size: 20px;
   border-radius: 34px;
   border: none;
-  padding: 0.3rem
+  outline: none;
+  padding: 0.3rem;
+  background-color: #339a25;
+  color: white;
+  height: 34px;
+  text-align: center;
 }
 .help-text {
   color: #202020;
@@ -129,4 +135,3 @@ select {
 .separator {
   height: 1rem;
 }
-

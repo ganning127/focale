@@ -1,5 +1,4 @@
 let running;
-//BLOCK THE ENTIRE DOMAIN WITH THE FOLLOWING FUNCTION
 findAllURL = function (urls){
   var current = window.location.href;
   let indexBlock;
@@ -8,7 +7,6 @@ findAllURL = function (urls){
         document.documentElement.innerHTML = `Come on.... no going on ${urls[i]} while you are studying!!`;
       }
     }
-
 }
 
 chrome.storage.local.get(['running'], function(result) {
@@ -24,7 +22,9 @@ chrome.storage.local.get(['running'], function(result) {
             "https://www.reddit.com/",
             "https://www.whatsapp.com/",
             "https://www.messenger.com/",
-            "https://www.wechat.com/"
+            "https://www.wechat.com/",
+            "https://www.tumblr.com/",
+            "https://www.pinterest.com/"
           ])
       }
     }
