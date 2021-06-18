@@ -8,6 +8,8 @@ let siteBlockingButton = document.getElementById("site-blocking-help");
 let notiSoundType = document.getElementById("notiSoundType");
 let notiSoundTypeButton = document.getElementById("noti-sound-type-help");
 
+let colorScheme = document.getElementById("color-scheme");
+
 console.log(notiSoundTypeButton);
 
 let nameToPath = {
@@ -51,6 +53,27 @@ function init() {
       }
     }
   });
+
+  chrome.storage.local.get(['colorScheme'], (result) => {
+    const scheme = result.colorScheme;
+    if (scheme == "default") {
+      updateUIDefault();
+    }
+    else if (scheme == "minBlue") {
+      updateUIBlue();
+    }
+
+    let styleSelect = document.getElementById("color-scheme");
+    var selectOptions = styleSelect.options.length;
+    for (var i = 0; i < selectOptions; i++) {
+      if (styleSelect.options[i].value == scheme) {
+        styleSelect.options[i].selected = true;
+        break;
+      }
+    }
+    const color = scheme == "default" ? "#339a25" : "#000080"
+    updateSelectBackground("color-scheme", color)
+  })
 }
 
 init();
@@ -138,3 +161,62 @@ notiSoundType.addEventListener("change", () => {
 function playSound(url) {
   new Audio(url).play();
 }
+
+colorScheme.addEventListener("change", () => {
+  const scheme = colorScheme.value // minBlue
+  chrome.storage.local.set({
+    colorScheme: scheme,
+  });
+  if (scheme == "minBlue") {
+    updateUIBlue();
+  }
+  else if (scheme == "default") {
+    updateUIDefault();
+  }
+  // update this page to match
+})
+
+function updateUIBlue() {
+  console.log("BLUE")
+  document.body.style.background = "#CEE7F0";
+  document.getElementById("sub-header").style.color = "#595757";
+  updateSelectBackground("color-scheme", "#000080")
+  setStandOutText("#000080");
+}
+
+function updateUIDefault() {
+  // reset back to default
+  console.log("WHITE")
+  document.body.style.background = "";
+  document.getElementById("sub-header").style.color = ""
+  updateSelectBackground("color-scheme", "#339a25")
+  setStandOutText("white");
+}
+
+function setStandOutText(color) {
+  const elementsToSet = document.querySelectorAll('.stand-out-text');
+
+  for (var i=0; i<elementsToSet.length; i++) {
+    elementsToSet[i].style.color = color
+  }
+}
+
+function updateSelectBackground(element, color) {
+  document.getElementById(element).style.backgroundColor = color;
+  console.log(color)
+}
+
+/*
+BLUE UI
+Primary Pink/Red: #CEE7F0
+
+  POPUP TITLE: #000080
+  Other text: #595757
+
+  FORM INPUT: [Primary pink/red], Opacity 0.2
+  PRESET & START BUTTONS: [Primary pink/red], Opacity 0.5
+
+  FOOTER 
+    -total minutes bkg: #fb7aa1, Opacity 0.5
+
+*/

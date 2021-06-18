@@ -9,15 +9,16 @@
   </head>
   <body>
     <div class="headings">
-      <h1>⚙️ Focale Settings ⚙️</h1>
-      <h4>Configure Focale to your liking. Settings are auto saved!</h4>
+      <h1 class="stand-out-text">⚙️ Focale Settings ⚙️</h1>
+      <h4 id="sub-header">Configure Focale to your liking. Settings are auto saved!</h4>
     </div>
     <div class="container">
       <div class="setting-container">
         <div class="input-container">
-          <label class="description-label"
+          <label class="description-label stand-out-text"
             ><span class="help-button" id="noti-prog-help">ℹ️</span> Progress
-            notifications</label>
+            notifications</label
+          >
           <label class="switch">
             <input type="checkbox" id="progNoti" name="progNoti" checked />
             <span class="slider round"></span>
@@ -33,9 +34,10 @@
 
       <div class="setting-container">
         <div class="input-container">
-          <label class="description-label"
+          <label class="description-label stand-out-text"
             ><span class="help-button" id="noti-sound-help">ℹ️</span>
-            Notification Sounds</label>
+            Notification Sounds</label
+          >
           <label class="switch">
             <input type="checkbox" id="soundNoti" name="soundNoti" checked />
             <span class="slider round"></span>
@@ -50,8 +52,10 @@
 
       <div class="setting-container">
         <div class="input-container">
-          <label class="description-label"><span class="help-button" id="site-blocking-help">ℹ️</span> Site
-            blocking</label>
+          <label class="description-label stand-out-text"
+            ><span class="help-button" id="site-blocking-help">ℹ️</span> Site
+            blocking</label
+          >
           <label class="switch">
             <input
               type="checkbox"
@@ -73,7 +77,7 @@
 
       <div class="setting-container">
         <div class="input-container">
-          <label class="description-label"
+          <label class="description-label stand-out-text"
             ><span class="help-button" id="noti-sound-type-help">ℹ️</span>
             Notification Sound Type:</label
           >
@@ -84,6 +88,25 @@
         </p>
       </div>
     </div>
+
+    <div class="separator"></div>
+
+    <div class="setting-container">
+      <div class="input-container">
+        <label class="description-label stand-out-text"
+          ><span class="help-button" id="color-scheme-help">ℹ️</span>
+          Color Scheme</label
+        >
+        <select name="color-scheme" id="color-scheme">
+          <option value="default">default</option>
+          <option value="minBlue">minnimal blue</option>
+        </select>
+      </div>
+      <p class="help-text hidden" id="color-scheme-text">
+        Focale's color scheme.
+      </p>
+    </div>
+  </div>
 
     <script src="./js/options.js"></script>
   </body>
