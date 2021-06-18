@@ -12,189 +12,211 @@ let pre3 = document.getElementById("pre3");
 let pre2 = document.getElementById("pre2");
 let pre1 = document.getElementById("pre1");
 let pre0 = document.getElementById("pre0");
+let preList = [pre0, pre1, pre2, pre3];
 
 setPaused();
 
-window.onload = function() {
-    //popup was opened
+window.onload = function () {
+  //popup was opened
+  chrome.runtime.sendMessage(
+    {
+      method: "getTimeLeft",
+    },
+    function (res) {
+      if (res.data === 0) {
+        timerOutput.innerHTML = startText();
+      } else if (res.data === "Start a timer below") {
+        timerOutput.innerHTML = `${res.data} &#9200;`;
+        chrome.storage.local.set({
+          running: false,
+        });
+      } else {
+        // timer has actually been started
+        timerOutput.innerHTML = formatTime(res.data);
+        startPopupInterval();
+      }
+    }
+  );
+  chrome.storage.local.get(["running"], function (result) {
+    if (result.running) {
+      // timer is running
+      hideInputs();
+      showControls();
+    } else {
+      showInputs();
+      hideControls();
+    }
+  });
+  // set total amount of time studied
+  chrome.storage.local.get(["totalMinStudy"], function (result) {
+    totalMinText.innerHTML =
+      "&#8987; <span class='stand-out'>" +
+      round2(result.totalMinStudy) +
+      "</span> minutes total";
+  });
 
-    // chrome.storage.local.get(['progNoti'], function(result) {
-    //   console.log("PROG: " + result.progNoti)
-    // })
-    chrome.runtime.sendMessage({
-        method: "getTimeLeft"
-    }, function(res) {
-        if (res.data === 0) {
-            timerOutput.innerHTML = startText();
-        } else if (res.data === "Start a timer below") {
-            timerOutput.innerHTML = `${res.data} &#9200;`;
-            chrome.storage.local.set({
-                running: false
-            });
-        } else {
-            // timer has actually been started
-            timerOutput.innerHTML = formatTime(res.data);
-            startPopupInterval();
-        }
-    });
-    chrome.storage.local.get(['running'], function(result) {
-        if (result.running) {
-            // timer is running
-            hideInputs();
-            showControls();
-        } else {
-            showInputs();
-            hideControls();
-        }
-    });
-    // set total amount of time studied
-    chrome.storage.local.get(['totalMinStudy'], function(result) {
-        totalMinText.innerHTML = "&#8987; <span class='stand-out'>" + round2(result.totalMinStudy) + "</span> minutes total"
-    });
+  chrome.storage.local.get(['colorScheme'], (result) => {
+    const scheme = result.colorScheme;
+    updatePopupUI(scheme);
+  })
 };
 
-startButton.addEventListener('click', function() {
-    // let mins = Math.floor(minuteInput.value);
-    let mins = minuteInput.value;
-    if (mins === "" || mins <= 0 || mins >= 1000) {
-        errorText.classList.remove("hidden");
-        return;
-    }
+startButton.addEventListener("click", function () {
+  // let mins = Math.floor(minuteInput.value);
+  let mins = minuteInput.value;
+  if (mins === "" || mins <= 0 || mins >= 1000) {
+    errorText.classList.remove("hidden");
+    return;
+  }
 
-    startConfig(mins);
+  startConfig(mins);
 });
 
-pre0.addEventListener('click', () => {
+pre0.addEventListener("click", () => {
   startConfig(pre0.innerHTML);
 });
 
-pre1.addEventListener('click', () => {
+pre1.addEventListener("click", () => {
   startConfig(pre1.innerHTML);
 });
 
-pre2.addEventListener('click', () => {
+pre2.addEventListener("click", () => {
   startConfig(pre2.innerHTML);
 });
 
-pre3.addEventListener('click', () => {
-    startConfig(pre3.innerHTML);
-  });
-
-pauseButton.addEventListener('click', function() {
-  debugger
-    switchPaused();
-    chrome.runtime.sendMessage({
-        method: "pauseTimer"
-    }, function(res) {
-        return true;
-    });
+pre3.addEventListener("click", () => {
+  startConfig(pre3.innerHTML);
 });
 
-resetButton.addEventListener('click', function() {
-    chrome.runtime.sendMessage({
-        method: "resetTimer"
-    }, function(res) {
-        return true;
-    });
-    showInputs();
-    hideControls();
-    clearInterval(getInterval);
-    timerOutput.innerHTML = "Timer has been reset";
-    chrome.storage.local.set({
-        running: false
-    });
-    chrome.storage.local.set({
-        timeLeft: "timerDone"
-    });
+pauseButton.addEventListener("click", function () {
+  debugger;
+  switchPaused();
+  chrome.runtime.sendMessage(
+    {
+      method: "pauseTimer",
+    },
+    function (res) {
+      return true;
+    }
+  );
+});
+
+resetButton.addEventListener("click", function () {
+  chrome.runtime.sendMessage(
+    {
+      method: "resetTimer",
+    },
+    function (res) {
+      return true;
+    }
+  );
+  showInputs();
+  hideControls();
+  clearInterval(getInterval);
+  timerOutput.innerHTML = "Timer has been reset";
+  chrome.storage.local.set({
+    running: false,
+  });
+  chrome.storage.local.set({
+    timeLeft: "timerDone",
+  });
 });
 
 function startConfig(mins) {
   timerOutput.innerHTML = formatTime(mins * 60);
-  chrome.runtime.sendMessage({
+  chrome.runtime.sendMessage(
+    {
       method: "startTimer",
-      data: mins
-  }, function(res) {
+      data: mins,
+    },
+    function (res) {
       started = true;
       minuteInput.value = "";
       startPopupInterval();
-  });
+    }
+  );
 
   errorText.classList.add("hidden");
   hideInputs();
   showControls();
 
   chrome.storage.local.set({
-      running: true
+    running: true,
   });
-  chrome.storage.local.set({
-      paused: false
-  }, function() {
-    setPaused();
-  });
+  chrome.storage.local.set(
+    {
+      paused: false,
+    },
+    function () {
+      setPaused();
+    }
+  );
 
   // get the array, append the new time, set the storage as the new array
-  chrome.storage.local.get(['mostUsedTimers'], (result) => {
-      // code will add the time just used to the mostUsedTimers list (which is stored in chrome.storage.local)
-      let times = result.mostUsedTimers
-      times.push(mins)
-      chrome.storage.local.set({
-          mostUsedTimers: times
-      })
-  })
+  chrome.storage.local.get(["mostUsedTimers"], (result) => {
+    // code will add the time just used to the mostUsedTimers list (which is stored in chrome.storage.local)
+    let times = result.mostUsedTimers;
+    times.push(mins);
+    chrome.storage.local.set({
+      mostUsedTimers: times,
+    });
+  });
 }
 
 function startPopupInterval() {
-    getInterval = setInterval(function() {
-        chrome.storage.local.get(['timeLeft'], function(result) {
-            // code gets seconds left which is stored
-            if (result.timeLeft === "timerDone") {
-                clearInterval(getInterval);
-                showInputs();
-                hideControls();
-                chrome.storage.local.set({
-                    running: false
-                });
-                timerOutput.innerHTML = startText();
-            } else {
-                timerOutput.innerHTML = formatTime(result.timeLeft);
-            }
+  getInterval = setInterval(function () {
+    chrome.storage.local.get(["timeLeft"], function (result) {
+      // code gets seconds left which is stored
+      if (result.timeLeft === "timerDone") {
+        clearInterval(getInterval);
+        showInputs();
+        hideControls();
+        chrome.storage.local.set({
+          running: false,
         });
-    }, 1000)
+        timerOutput.innerHTML = startText();
+      } else {
+        timerOutput.innerHTML = formatTime(result.timeLeft);
+      }
+    });
+  }, 1000);
 }
 
 function formatTime(seconds) {
-    // seconds to hh:mm:ss
-    dateObj = new Date(seconds * 1000);
-    hours = dateObj.getUTCHours();
-    minsInHours = hours * 60;
-    minutes = dateObj.getUTCMinutes() + minsInHours;
-    seconds = dateObj.getSeconds();
-    timeString = minutes.toString().padStart(2, '0') +
-        ':' + seconds.toString().padStart(2, '0');
-    return timeString;
+  // seconds to hh:mm:ss
+  dateObj = new Date(seconds * 1000);
+  hours = dateObj.getUTCHours();
+  minsInHours = hours * 60;
+  minutes = dateObj.getUTCMinutes() + minsInHours;
+  seconds = dateObj.getSeconds();
+  timeString =
+    minutes.toString().padStart(2, "0") +
+    ":" +
+    seconds.toString().padStart(2, "0");
+  return timeString;
 }
 
 function hideInputs() {
-    inputsRow.classList.add("hidden");
+  inputsRow.classList.add("hidden");
 }
 
 function showInputs() {
-    setRecTimes();
-    inputsRow.classList.remove("hidden");
+  setRecTimes();
+  inputsRow.classList.remove("hidden");
 }
 
 function hideControls() {
-    resetButton.classList.add("hidden");
-    pauseButton.classList.add("hidden");
+  resetButton.classList.add("hidden");
+  pauseButton.classList.add("hidden");
 }
 
 function showControls() {
-    resetButton.classList.remove("hidden");
-    pauseButton.classList.remove("hidden");
+  resetButton.classList.remove("hidden");
+  pauseButton.classList.remove("hidden");
 }
 
 function round2(num) {
-    return Math.round(num * 100) / 100
+  return Math.round(num * 100) / 100;
 }
 
 function startText() {
@@ -202,117 +224,171 @@ function startText() {
 }
 
 function switchPaused() {
-  chrome.storage.local.get(['paused'], function(result) {
+  chrome.storage.local.get(["paused"], function (result) {
     let toSetPause;
     if (result.paused) {
-        // previously was paused, now is playing
-        pauseButton.innerHTML = "pause"
-        chrome.storage.local.set({ paused: false })
-    }
-    else {
-        pauseButton.innerHTML = "resume";
-        chrome.storage.local.set({ paused: true })
+      // previously was paused, now is playing
+      pauseButton.innerHTML = "pause";
+      chrome.storage.local.set({ paused: false });
+    } else {
+      pauseButton.innerHTML = "resume";
+      chrome.storage.local.set({ paused: true });
     }
   });
 }
 
 function setPaused() {
-  chrome.storage.local.get(['paused'], function(result) {
+  chrome.storage.local.get(["paused"], function (result) {
     if (result.paused) {
-      pauseButton.innerHTML = "resume"
-    }
-    else {
-      pauseButton.innerHTML = "pause"
+      pauseButton.innerHTML = "resume";
+    } else {
+      pauseButton.innerHTML = "pause";
     }
   });
 }
 
 function setRecTimes() {
-    chrome.storage.local.get(['mostUsedTimers'], (result) => {
-        let times = result.mostUsedTimers; // ["45", "45", etc]
-        let uniqueTimes = new Set(times);
+  chrome.storage.local.get(["mostUsedTimers"], (result) => {
+    let times = result.mostUsedTimers; // ["45", "45", etc]
+    let uniqueTimes = new Set(times);
 
+    if (uniqueTimes.size >= 4) {
+      // get most common times
+      const timesToSet = getMostCommon(times, 4);
+      createPresets(timesToSet, 4);
+    } else {
+      // set the 4 - size number of presets
+      knownTimesLength = uniqueTimes.size;
 
-        if (uniqueTimes.size >= 4) {
-            // get most common times
-            const timesToSet = getMostCommon(times, 4);
-            createPresets(timesToSet, 4)
-        }
-        else {
-            // set the 4 - size number of presets
-            knownTimesLength = uniqueTimes.size;
-            
-            const timesToSet = getMostCommon(times, knownTimesLength);
+      const timesToSet = getMostCommon(times, knownTimesLength);
 
-            console.log(uniqueTimes)
-            console.log(knownTimesLength)
-            console.log(timesToSet)
-            createPresets(timesToSet, knownTimesLength)
-        }
-    })
+      console.log(uniqueTimes);
+      console.log(knownTimesLength);
+      console.log(timesToSet);
+      createPresets(timesToSet, knownTimesLength);
+    }
+  });
 }
 
 function getMostCommon(arr, items) {
-    // return the most common items (#) in arr
-    let itemToCount = {};
-    arr.map(item => {
+  // return the most common items (#) in arr
+  let itemToCount = {};
+  arr.map((item) => {
+    if (Object.keys(itemToCount).includes(item.toString())) {
+      itemToCount[item] += 1;
+    } else {
+      itemToCount[item] = 1;
+    }
+  });
 
-        if (Object.keys(itemToCount).includes(item.toString())) {
-            itemToCount[item] += 1
-        }
-        else {
-            itemToCount[item] = 1
-        }
-    })
+  let sortedCounts = sortKeys(itemToCount);
+  let onlyKeys = [];
+  sortedCounts.map((item) => {
+    onlyKeys.push(item[0]);
+  });
+  // only keys has keys sorted from least --> greatest
 
-    let sortedCounts = sortKeys(itemToCount);
-    let onlyKeys = []
-    sortedCounts.map(item =>{
-        onlyKeys.push(item[0])
-    });
-    // only keys has keys sorted from least --> greatest
-
-    return onlyKeys.slice(0, items)
+  return onlyKeys.slice(0, items);
 }
 
 function sortKeys(dict) {
-    var sortable = [];
-    for (var key in dict) {
-        sortable.push([key, dict[key]]);
-    }
+  var sortable = [];
+  for (var key in dict) {
+    sortable.push([key, dict[key]]);
+  }
 
-    sortable.sort(function(a, b) {
-        return b[1] - a[1];
-    });
-    return sortable
+  sortable.sort(function (a, b) {
+    return b[1] - a[1];
+  });
+  return sortable;
 }
 
 function createPresets(items, number) {
-    console.log("NUM: " + number)
-    const holder = document.getElementById("preset-holder");
-    for (var i=0; i<number; i++) {
-        let button = document.getElementById(`pre${i}`)
-        button.innerHTML = items[i];
-    }
+  console.log("NUM: " + number);
+  const holder = document.getElementById("preset-holder");
+  for (var i = 0; i < number; i++) {
+    let button = document.getElementById(`pre${i}`);
+    button.innerHTML = items[i];
+  }
 }
-
-
 
 // DEV shuffle random
 function shuffle(array) {
-    var currentIndex = array.length,  randomIndex;
-  
-    // While there remain elements to shuffle...
-    while (0 !== currentIndex) {
-  
-      // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-  
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex], array[currentIndex]];
-    }
-  
-    return array;
+  var currentIndex = array.length,
+    randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex],
+      array[currentIndex],
+    ];
   }
+
+  return array;
+}
+
+function updatePopupUI(scheme) {
+  console.log(scheme)
+  if (scheme == "minBlue") {
+    updatePopupUIBlue();
+  }
+  // don't need default version because css does that
+}
+
+function updatePopupUIBlue() {
+  const primaryColor = "rgb(0, 0, 128)"
+  const backgroundColor = "rgb(206, 231, 240)"
+  const defaultTextColor = "rgb(89, 87, 87)"
+
+  document.body.style.background = backgroundColor; 
+
+  document.querySelector(".headers h1").style.color = primaryColor;
+
+  let horizontalBars = document.querySelectorAll("hr");
+  setBackgroundColors(horizontalBars, primaryColor);
+
+  timerOutput.style.color = defaultTextColor;
+  totalMinText.style.backgroundColor = "rgba(67, 135, 224, 0.6)"
+  
+  document.querySelector("footer").style.backgroundColor = "rgb(89, 87, 87, 0.3)"
+
+  setBackgroundColors(preList, "transparent");
+  setBorders(preList, primaryColor);
+  setColors(preList, primaryColor);
+
+  minuteInput.style.backgroundColor = "rgba(0, 0, 128, 0.3)";
+  minuteInput.style.border = "1px solid rgba(0, 0, 128, 0.8)";
+
+  pauseButton.style.color = primaryColor;
+  pauseButton.style.border = `1px solid ${primaryColor}`
+  resetButton.style.color = primaryColor;
+  resetButton.style.border = `1px solid ${primaryColor}`
+
+  startButton.style.backgroundColor = "rgba(0, 0, 128, 0.3)";
+  startButton.style.border = `1px solid ${primaryColor}`;
+}
+
+
+function setBackgroundColors(elements, color) {
+  for (var i=0; i<elements.length; i++) {
+    elements[i].style.backgroundColor = color;
+  }
+}
+
+function setBorders(elements, color) {
+  for (var i=0; i<elements.length; i++) {
+    elements[i].style.border = `1px solid ${color}`;
+  }
+}
+
+function setColors(elements, color) {
+  for (var i=0; i<elements.length; i++) {
+    elements[i].style.color = color;
+  }
+}
