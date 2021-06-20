@@ -3,7 +3,7 @@
 ## Overview
 Focale is a [chrome extension](https://chrome.google.com/webstore/detail/focale-study-pal/khjidjdpidalladedmkjibjkklanhcnc) that allows students to set a study timer, and track their study minutes over time. 
 
-## Features
+## Current Features
 * Ability to customize length of study timer
 * Pause, resume, and reset controls for the timer
 * Notifications about when the timer ends.
