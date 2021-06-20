@@ -14,6 +14,23 @@ let pre1 = document.getElementById("pre1");
 let pre0 = document.getElementById("pre0");
 let preList = [pre0, pre1, pre2, pre3];
 let horizontalBars = document.querySelectorAll("hr");
+let scheme;
+
+// always need to add one more than options.js b/c border color
+let colorKeys = {
+  "minBlue": ["rgb(0, 0, 128)", "rgb(206, 231, 240)", "rgb(89, 87, 87)", "rgb(28, 79, 145)", "rgb(157, 206, 242)"],
+  "midSpce": ["rgb(163, 163, 163)", "rgb(13, 13, 13)", "rgb(115, 115, 115)", "rgb(163, 163, 163)", "rgb(0, 0, 0)"],
+  "noir": ["rgb(138, 191, 186)", "rgb(12, 13, 12)", "rgb(88, 115, 107)", "rgb(242, 242, 242)", "rgb(36, 38, 37)"],
+  "neon": ["rgb(242, 56, 105)", "rgb(3, 2, 38)", "rgb(66, 43, 217)", "rgb(57, 255, 20)", "rgb(0, 0, 0)"]
+}
+
+let color = {
+  primaryColor: "",
+  backgroundColor: "",
+  defaultTextColor: "",
+  timerTextColor: "",
+  popupBorderColor: ""
+};
 
 setPaused();
 
@@ -57,14 +74,22 @@ window.onload = function () {
   });
 
   chrome.storage.local.get(["colorScheme"], (result) => {
-    const scheme = result.colorScheme;
-    updatePopupUI(scheme);
+    scheme = result.colorScheme;
+
+    if (scheme === "default") {
+      return;
+    }
+    color.primaryColor = colorKeys[scheme][0];
+    color.backgroundColor = colorKeys[scheme][1];
+    color.defaultTextColor = colorKeys[scheme][2];    
+    color.timerTextColor = colorKeys[scheme][3];
+    color.popupBorderColor = colorKeys[scheme][4];
+    updatePopupUI();
   });
 };
 
 startButton.addEventListener("click", function () {
-  // let mins = Math.floor(minuteInput.value);
-  let mins = minuteInput.value;
+  let mins = Math.floor(minuteInput.value);
   if (mins === "" || mins <= 0 || mins >= 1000) {
     errorText.classList.remove("hidden");
     return;
@@ -90,7 +115,6 @@ pre3.addEventListener("click", () => {
 });
 
 pauseButton.addEventListener("click", function () {
-  debugger;
   switchPaused();
   chrome.runtime.sendMessage(
     {
@@ -262,10 +286,6 @@ function setRecTimes() {
       knownTimesLength = uniqueTimes.size;
 
       const timesToSet = getMostCommon(times, knownTimesLength);
-
-      console.log(uniqueTimes);
-      console.log(knownTimesLength);
-      console.log(timesToSet);
       createPresets(timesToSet, knownTimesLength);
     }
   });
@@ -313,66 +333,40 @@ function createPresets(items, number) {
   }
 }
 
-// DEV shuffle random
-function shuffle(array) {
-  var currentIndex = array.length,
-    randomIndex;
 
-  // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
 
-    // And swap it with the current element.
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex],
-      array[currentIndex],
-    ];
-  }
 
-  return array;
-}
+function updatePopupUI() {  
+  setBackgroundColor(document.body, color.backgroundColor);
+  setColor(document.querySelector(".headers h1"), color.primaryColor);
+  setBackgroundColors(horizontalBars, color.primaryColor);
+  setColor(timerOutput, color.timerTextColor);
 
-function updatePopupUI(scheme) {
-  console.log(scheme);
   if (scheme == "minBlue") {
-    updatePopupUIBlue();
+    setBackgroundColor(totalMinText, rgbToRgba(color.timerTextColor, 0.6));
+    setBackgroundColor(document.querySelector("footer"), rgbToRgba(color.timerTextColor, 0.5));
   }
-  // don't need default version because css does that
-}
+  else {
+    setBackgroundColor(totalMinText, rgbToRgba(color.backgroundColor, 0.6));
+  setBackgroundColor(document.querySelector("footer"), rgbToRgba(color.backgroundColor, 0.5));
+  }
+  
 
-function updatePopupUIBlue() {
-  const primaryColor = "rgb(0, 0, 128)";
-  const backgroundColor = "rgb(206, 231, 240)";
-  const defaultTextColor = "rgb(89, 87, 87)";
-
-  setBackgroundColor(document.body, backgroundColor);
-
-  setColor(document.querySelector(".headers h1"), primaryColor);
-
-  setBackgroundColors(horizontalBars, primaryColor);
-
-  setColor(timerOutput, defaultTextColor);
-
-  setBackgroundColor(totalMinText, "rgba(67, 135, 224, 0.6)");
-
-  setBackgroundColor(document.querySelector("footer"), "rgb(89, 87, 87, 0.3)");
   setBackgroundColors(preList, "transparent");
-  setBorders(preList, primaryColor);
-  setColors(preList, primaryColor);
-  setBackgroundColor(minuteInput, "rgba(0, 0, 128, 0.3)");
-  setBorder(minuteInput, "1px solid rgba(0, 0, 128, 0.8)");
+  setBorders(preList, color.primaryColor);
+  setColors(preList, color.primaryColor);
 
-  setColor(pauseButton, primaryColor);
-  setBorder(pauseButton, `1px solid ${primaryColor}`);
+  setBackgroundColor(minuteInput, rgbToRgba(color.primaryColor, 0.3));
 
-  setColor(resetButton, primaryColor);
-  setBorder(resetButton, `1px solid ${primaryColor}`);
+  setBorder(minuteInput, `1px solid ${rgbToRgba(color.primaryColor, 0.8)}`);
 
-  setBackgroundColor(startButton, "rgba(0, 0, 128, 0.3)");
-
-  setBorder(startButton, `1px solid ${primaryColor}`);
+  setColor(pauseButton, color.primaryColor);
+  setBorder(pauseButton, `1px solid ${color.primaryColor}`);
+  setColor(resetButton, color.primaryColor);
+  setBorder(resetButton, `1px solid ${color.primaryColor}`)
+  setBackgroundColor(startButton,`${rgbToRgba(color.primaryColor, 0.3)}`);
+  setBorder(startButton, `1px solid ${color.primaryColor}`);
+  setBorder(document.body, `10px solid ${color.popupBorderColor}`)
 }
 
 function setColor(element, color) {
@@ -403,4 +397,10 @@ function setColors(elements, color) {
   for (var i = 0; i < elements.length; i++) {
     elements[i].style.color = color;
   }
+}
+
+function rgbToRgba(rgb, opacity) {
+  let rgbaColor = rgb.replace(')', `, ${opacity})`).replace('rgb', 'rgba');
+  console.log(rgbaColor)
+  return rgbaColor
 }

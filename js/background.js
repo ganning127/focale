@@ -144,8 +144,7 @@ function startTimer(minutes) {
 
   chrome.storage.local.get(["progNoti"], function (result) {
     console.log("MIN: " + timerInfo.minutes);
-    if (parseFloat(timerInfo.minutes) >= 0.1) {
-      // DEV change to 30 min when release
+    if (parseFloat(timerInfo.minutes) >= 30) {
       progNoti = result.progNoti;
       console.log(progNoti);
     } else {

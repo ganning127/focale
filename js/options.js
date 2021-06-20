@@ -9,6 +9,21 @@ let notiSoundType = document.getElementById("notiSoundType");
 let notiSoundTypeButton = document.getElementById("noti-sound-type-help");
 
 let colorScheme = document.getElementById("color-scheme");
+let colorSchemeButton = document.getElementById("color-scheme-help");
+let helpTexts = document.querySelectorAll(".help-text");
+let colorKeys = {
+  "minBlue": ["rgb(0, 0, 128)", "rgb(206, 231, 240)", "rgb(89, 87, 87)", "rgb(67, 135, 224)"],
+  "midSpce": ["rgb(163, 163, 163)", "rgb(13, 13, 13)", "rgb(115, 115, 115)", "rgb(163, 163, 163)"],
+  "noir": ["rgb(138, 191, 186)", "rgb(12, 13, 12)", "rgb(88, 115, 107)", "rgb(242, 242, 242)"],
+  "neon": ["rgb(242, 56, 105)", "rgb(3, 2, 38)", "rgb(66, 43, 217)", "rgb(57, 255, 20)"]
+}
+
+let color = {
+  primaryColor: "",
+  backgroundColor: "",
+  defaultTextColor: "",
+  timerTextColor: "",
+};
 
 console.log(notiSoundTypeButton);
 
@@ -56,11 +71,16 @@ function init() {
 
   chrome.storage.local.get(['colorScheme'], (result) => {
     const scheme = result.colorScheme;
-    if (scheme == "default") {
+    console.log("SCHEME GOTTEN: " + result.colorScheme)
+    if (scheme === "default") {
       updateUIDefault();
     }
-    else if (scheme == "minBlue") {
-      updateUIBlue();
+    else {
+      console.log("HERE")
+      color.primaryColor = colorKeys[scheme][0];
+      color.backgroundColor = colorKeys[scheme][1];
+      color.defaultTextColor = colorKeys[scheme][2];    
+      color.timerTextColor = colorKeys[scheme][3];  
     }
 
     let styleSelect = document.getElementById("color-scheme");
@@ -71,8 +91,15 @@ function init() {
         break;
       }
     }
-    const color = scheme == "default" ? "#339a25" : "#000080"
+
     updateSelectBackground("color-scheme", color)
+    if (scheme === 'default') {
+      updateSelectBackground("color-scheme", "#339a25");
+    }
+    else {
+      updateSelectBackground("color-scheme", color.primaryColor);
+      updateUI();
+    }
   })
 }
 
@@ -166,22 +193,45 @@ colorScheme.addEventListener("change", () => {
   const scheme = colorScheme.value // minBlue
   chrome.storage.local.set({
     colorScheme: scheme,
+  }, () => {
+    console.log("SET")
   });
-  if (scheme == "minBlue") {
-    updateUIBlue();
+
+  if (scheme !== "default") {
+    color.primaryColor = colorKeys[scheme][0];
+    color.backgroundColor = colorKeys[scheme][1];
+    color.defaultTextColor = colorKeys[scheme][2];    
+    color.timerTextColor = colorKeys[scheme][3]; 
   }
-  else if (scheme == "default") {
+  
+
+  if (scheme == "default") {
     updateUIDefault();
+  }
+  else {
+    updateUI();
   }
   // update this page to match
 })
 
-function updateUIBlue() {
+colorSchemeButton.addEventListener('click', () => {
+  let colorSchemeText = document.getElementById("color-scheme-text");
+  if (colorSchemeText.classList.contains("hidden")) {
+    colorSchemeText.classList.remove("hidden");
+  } else {
+    colorSchemeText.classList.add("hidden");
+  }
+});
+
+
+function updateUI() {
   console.log("BLUE")
-  document.body.style.background = "#CEE7F0";
-  document.getElementById("sub-header").style.color = "#595757";
-  updateSelectBackground("color-scheme", "#000080")
-  setStandOutText("#000080");
+  console.log(color.backgroundColor)
+  document.body.style.background = color.backgroundColor;
+  document.getElementById("sub-header").style.color = color.defaultTextColor;
+  updateSelectBackground("color-scheme", color.primaryColor)
+  changeHelpTexts(helpTexts, color.primaryColor);
+  setStandOutText(color.primaryColor);
 }
 
 function updateUIDefault() {
@@ -190,6 +240,7 @@ function updateUIDefault() {
   document.body.style.background = "";
   document.getElementById("sub-header").style.color = ""
   updateSelectBackground("color-scheme", "#339a25")
+  changeHelpTexts(helpTexts, "")
   setStandOutText("white");
 }
 
@@ -206,17 +257,9 @@ function updateSelectBackground(element, color) {
   console.log(color)
 }
 
-/*
-BLUE UI
-Primary Pink/Red: #CEE7F0
+function changeHelpTexts(helpTexts, color) {
+  for (var i=0; i<helpTexts.length; i++) {
+    helpTexts[i].style.color = color;
+  }
+}
 
-  POPUP TITLE: #000080
-  Other text: #595757
-
-  FORM INPUT: [Primary pink/red], Opacity 0.2
-  PRESET & START BUTTONS: [Primary pink/red], Opacity 0.5
-
-  FOOTER 
-    -total minutes bkg: #fb7aa1, Opacity 0.5
-
-*/
