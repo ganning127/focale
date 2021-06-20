@@ -140,9 +140,13 @@ soundNotiButton.addEventListener("click", () => {
 siteBlockingCheck.addEventListener("change", function () {
   chrome.storage.local.get(["siteBlocking"], function (result) {
     if (result.siteBlocking) {
-      chrome.storage.local.set({ siteBlocking: false });
+      chrome.storage.local.set({ siteBlocking: false }, () => {
+        console.log("SET TO FALSE")
+      });
     } else {
-      chrome.storage.local.set({ siteBlocking: true });
+      chrome.storage.local.set({ siteBlocking: true }, () => {
+        console.log("SET TO TRUE")
+      });
     }
   });
 });
