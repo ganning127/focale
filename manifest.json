@@ -28,7 +28,7 @@
   "content_scripts": [
     {
       "js": ["./js/content.js"],
-      "matches": ["http://*/*", "https://*/*"]
+      "matches": ["https://www.instagram.com/*", "https://www.facebook.com/*", "https://www.reddit.com/*", "https://www.whatsapp.com/*", "https://www.messenger.com/*", "https://www.wechat.com/*", "https://www.tumblr.com/*", "https://www.pinterest.com/*"]
     }
   ],
   "permissions": ["storage", "notifications", "https://type.fit/api/quotes"],
