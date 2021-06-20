@@ -25,8 +25,6 @@ let color = {
   timerTextColor: "",
 };
 
-console.log(notiSoundTypeButton);
-
 let nameToPath = {
   default: "default.wav",
   positive: "positive.wav",
@@ -57,9 +55,6 @@ function init() {
     // ./audio/ping.wav to ping
     const pureName = userStored.substring(8, userStored.length - 4);
 
-    console.log(userStored);
-    console.log(pureName);
-
     var selectOptions = select.options.length;
     for (var i = 0; i < selectOptions; i++) {
       if (select.options[i].value == pureName) {
@@ -71,12 +66,10 @@ function init() {
 
   chrome.storage.local.get(['colorScheme'], (result) => {
     const scheme = result.colorScheme;
-    console.log("SCHEME GOTTEN: " + result.colorScheme)
     if (scheme === "default") {
       updateUIDefault();
     }
     else {
-      console.log("HERE")
       color.primaryColor = colorKeys[scheme][0];
       color.backgroundColor = colorKeys[scheme][1];
       color.defaultTextColor = colorKeys[scheme][2];    
@@ -109,13 +102,9 @@ progNotiCheck.addEventListener("change", function () {
   // sets if the user wants notifications or not
   chrome.storage.local.get(["progNoti"], function (result) {
     if (result.progNoti) {
-      chrome.storage.local.set({ progNoti: false }, () => {
-        console.log("SET TO FALSE");
-      });
+      chrome.storage.local.set({ progNoti: false });
     } else {
-      chrome.storage.local.set({ progNoti: true }, () => {
-        console.log("SET TO True");
-      });
+      chrome.storage.local.set({ progNoti: true });
     }
   });
 });
@@ -168,7 +157,6 @@ siteBlockingButton.addEventListener("click", () => {
 });
 
 notiSoundTypeButton.addEventListener("click", () => {
-  console.log("CLK");
   let notiSoundTypeText = document.getElementById("noti-sound-type-text");
   if (notiSoundTypeText.classList.contains("hidden")) {
     notiSoundTypeText.classList.remove("hidden");
@@ -193,8 +181,6 @@ colorScheme.addEventListener("change", () => {
   const scheme = colorScheme.value // minBlue
   chrome.storage.local.set({
     colorScheme: scheme,
-  }, () => {
-    console.log("SET")
   });
 
   if (scheme !== "default") {
@@ -225,8 +211,6 @@ colorSchemeButton.addEventListener('click', () => {
 
 
 function updateUI() {
-  console.log("BLUE")
-  console.log(color.backgroundColor)
   document.body.style.background = color.backgroundColor;
   document.getElementById("sub-header").style.color = color.defaultTextColor;
   updateSelectBackground("color-scheme", color.primaryColor)
@@ -236,7 +220,6 @@ function updateUI() {
 
 function updateUIDefault() {
   // reset back to default
-  console.log("WHITE")
   document.body.style.background = "";
   document.getElementById("sub-header").style.color = ""
   updateSelectBackground("color-scheme", "#339a25")
@@ -254,7 +237,6 @@ function setStandOutText(color) {
 
 function updateSelectBackground(element, color) {
   document.getElementById(element).style.backgroundColor = color;
-  console.log(color)
 }
 
 function changeHelpTexts(helpTexts, color) {

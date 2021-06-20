@@ -325,7 +325,6 @@ function sortKeys(dict) {
 }
 
 function createPresets(items, number) {
-  console.log("NUM: " + number);
   const holder = document.getElementById("preset-holder");
   for (var i = 0; i < number; i++) {
     let button = document.getElementById(`pre${i}`);
@@ -401,6 +400,5 @@ function setColors(elements, color) {
 
 function rgbToRgba(rgb, opacity) {
   let rgbaColor = rgb.replace(')', `, ${opacity})`).replace('rgb', 'rgba');
-  console.log(rgbaColor)
   return rgbaColor
 }
