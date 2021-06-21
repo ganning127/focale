@@ -213,7 +213,6 @@ function sendNoti(percentUse) {
     .then(function (data) {
       let index = Math.floor(Math.random() * 1500 + 0);
       quote = data[index].text;
-      console.log("SENDING NOTI");
       chrome.notifications.create("progress", {
         type: "basic",
         iconUrl: "img/favicon48.png",

@@ -199,9 +199,8 @@ colorScheme.addEventListener("change", () => {
     updateUIDefault();
   }
   else {
-    updateUI();
+    updateUI(); // updates options.html to match color change
   }
-  // update this page to match
 })
 
 colorSchemeButton.addEventListener('click', () => {

@@ -303,12 +303,13 @@ function getMostCommon(arr, items) {
   });
 
   let sortedCounts = sortKeys(itemToCount);
+  console.log(sortedCounts);
   let onlyKeys = [];
   sortedCounts.map((item) => {
     onlyKeys.push(item[0]);
   });
+  console.log(onlyKeys)
   // only keys has keys sorted from least --> greatest
-
   return onlyKeys.slice(0, items);
 }
 
@@ -325,15 +326,17 @@ function sortKeys(dict) {
 }
 
 function createPresets(items, number) {
-  const holder = document.getElementById("preset-holder");
   for (var i = 0; i < number; i++) {
     let button = document.getElementById(`pre${i}`);
-    button.innerHTML = items[i];
+    console.log(items)
+    if (typeof items[i] !== 'undefined') {
+      button.innerHTML = items[i];
+    }
+    else {
+      button.innerHTML = 30;
+    }
   }
 }
-
-
-
 
 function updatePopupUI() {  
   setBackgroundColor(document.body, color.backgroundColor);
