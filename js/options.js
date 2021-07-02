@@ -10,13 +10,22 @@ let notiSoundTypeButton = document.getElementById("noti-sound-type-help");
 
 let colorScheme = document.getElementById("color-scheme");
 let colorSchemeButton = document.getElementById("color-scheme-help");
+
+let headingColorInput = document.getElementById("heading-color");
+let backgroundColorInput = document.getElementById("background-color");
+let descriptionColorInput = document.getElementById("description-color");
+let timerTextColorInput = document.getElementById("timerText-color");
+
+
 let helpTexts = document.querySelectorAll(".help-text");
 let colorKeys = {
   "minBlue": ["rgb(0, 0, 128)", "rgb(206, 231, 240)", "rgb(89, 87, 87)", "rgb(67, 135, 224)"],
   "midSpce": ["rgb(163, 163, 163)", "rgb(13, 13, 13)", "rgb(115, 115, 115)", "rgb(163, 163, 163)"],
   "noir": ["rgb(138, 191, 186)", "rgb(12, 13, 12)", "rgb(88, 115, 107)", "rgb(242, 242, 242)"],
-  "neon": ["rgb(242, 56, 105)", "rgb(3, 2, 38)", "rgb(66, 43, 217)", "rgb(57, 255, 20)"]
+  "neon": ["rgb(242, 56, 105)", "rgb(3, 2, 38)", "rgb(66, 43, 217)", "rgb(57, 255, 20)"],
+  "custom": []
 }
+
 
 let color = {
   primaryColor: "",
@@ -65,11 +74,32 @@ function init() {
   });
 
   chrome.storage.local.get(['colorScheme'], (result) => {
-    const scheme = result.colorScheme;
-    if (scheme === "default") {
+   
+
+    // need to be able to store the each color key in storage b/c need to save custom
+
+    const scheme = result.colorScheme[0];
+    console.log(result.colorScheme)
+
+    if (scheme[0] === "default") {
       updateUIDefault();
     }
+    else if (scheme === "custom") {
+      console.log('running custom')
+
+      color.primaryColor = result.colorScheme[1][0];
+      color.backgroundColor = result.colorScheme[1][1];
+      color.defaultTextColor = result.colorScheme[1][2];
+      color.timerTextColor = result.colorScheme[1][3];
+
+      headingColorInput.value = color.primaryColor;
+      backgroundColorInput.value = color.backgroundColor;
+      descriptionColorInput.value = color.defaultTextColor;
+      timerTextColorInput.value = color.timerTextColor;
+
+    }
     else {
+      console.log('running else')
       color.primaryColor = colorKeys[scheme][0];
       color.backgroundColor = colorKeys[scheme][1];
       color.defaultTextColor = colorKeys[scheme][2];    
@@ -183,11 +213,35 @@ function playSound(url) {
 
 colorScheme.addEventListener("change", () => {
   const scheme = colorScheme.value // minBlue
+
+  let arraySet = [];
+  if (scheme === "custom") {
+    document.querySelector('.custom-color').classList.remove("hidden");
+
+    color.primaryColor = "#000000";
+    color.backgroundColor = "#FFFFFF";
+    color.defaultTextColor = "#808080";    
+    color.timerTextColor = "#000000"; 
+
+    headingColorInput.value = color.primaryColor;
+    backgroundColorInput.value = color.backgroundColor;
+    descriptionColorInput.value = color.defaultTextColor;
+    timerTextColorInput.value = color.timerTextColor;
+
+    arraySet = ["custom", [color.primaryColor, color.backgroundColor, color.defaultTextColor, color.timerTextColor]];
+  }
+
+  else {
+    document.querySelector('.custom-color').classList.add('hidden');
+    arraySet.push(scheme);
+    arraySet.push(colorKeys[scheme])
+  }
+
   chrome.storage.local.set({
-    colorScheme: scheme,
+    colorScheme: arraySet,
   });
 
-  if (scheme !== "default") {
+  if (scheme !== "default" && scheme !== "custom") {
     color.primaryColor = colorKeys[scheme][0];
     color.backgroundColor = colorKeys[scheme][1];
     color.defaultTextColor = colorKeys[scheme][2];    
@@ -202,6 +256,53 @@ colorScheme.addEventListener("change", () => {
     updateUI(); // updates options.html to match color change
   }
 })
+
+
+
+headingColorInput.addEventListener('input', () => {
+  color.primaryColor = headingColorInput.value;
+
+  setStorageCustom(0, color.primaryColor)
+
+  
+});
+
+backgroundColorInput.addEventListener('input', () => {
+  color.backgroundColor = backgroundColorInput.value;
+  setStorageCustom(1, color.backgroundColor)
+})
+
+descriptionColorInput.addEventListener('input', () => {
+  color.defaultTextColor = descriptionColorInput.value;
+  setStorageCustom(2, color.defaultTextColor)
+  updateUI();
+})
+
+timerTextColorInput.addEventListener('input', () => {
+  color.timerTextColor = timerTextColorInput.value;
+  setStorageCustom(3, color.timerTextColor)
+  updateUI();
+})
+
+
+/*
+Color format
+[heading, background, description, timerText]
+*/
+
+function setStorageCustom(index, color) {
+  chrome.storage.local.get(["colorScheme"], (res) => {
+    let foundArr = res.colorScheme;
+
+    foundArr[1][index] = color;
+    console.log(foundArr)
+
+    chrome.storage.local.set({ colorScheme: foundArr });
+  });
+  updateUI();
+
+}
+
 
 colorSchemeButton.addEventListener('click', () => {
   let colorSchemeText = document.getElementById("color-scheme-text");

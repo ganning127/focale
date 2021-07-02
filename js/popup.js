@@ -79,11 +79,21 @@ window.onload = function () {
     if (scheme === "default") {
       return;
     }
-    color.primaryColor = colorKeys[scheme][0];
-    color.backgroundColor = colorKeys[scheme][1];
-    color.defaultTextColor = colorKeys[scheme][2];    
-    color.timerTextColor = colorKeys[scheme][3];
-    color.popupBorderColor = colorKeys[scheme][4];
+    else if (scheme[0] === "custom") {
+      color.primaryColor = scheme[1][0]
+      color.backgroundColor = scheme[1][1]
+      color.defaultTextColor = scheme[1][2]
+      color.timerTextColor = scheme[1][3]
+      color.popupBorderColor = scheme[1][0]
+    }
+    else {
+      color.primaryColor = scheme[1][0]
+      color.backgroundColor = scheme[1][1]
+      color.defaultTextColor = scheme[1][2]
+      color.timerTextColor = scheme[1][3]
+      color.popupBorderColor = colorKeys[scheme[0]][4];
+    }
+    
     updatePopupUI();
   });
 };
